@@ -12,7 +12,7 @@ use std::{
 };
 
 const LEFT_MARGIN: i32 = 48;
-const BOTTOM_MARGIN: i32 = 48; // wysokość Twojego paska/waybara
+const BOTTOM_MARGIN: i32 = 48;
 
 const CSS: &str = r#"
 window {
@@ -80,7 +80,6 @@ fn save_history(cmd: &str) {
     }
 }
 
-// jak w terminalu z "&": odpięte, bez wyjścia na ekran
 fn run(cmd: &str) {
     let cmd = cmd.trim();
     if cmd.is_empty() {
@@ -115,7 +114,6 @@ fn build_ui(app: &gtk::Application) {
     win.set_decorated(false);
     win.set_resizable(false);
 
-    // pozycja: lewy dolny róg
     win.init_layer_shell();
     win.set_namespace("winrun");
     win.set_layer(Layer::Top);
@@ -125,7 +123,6 @@ fn build_ui(app: &gtk::Application) {
     win.set_margin(Edge::Bottom, BOTTOM_MARGIN);
     win.set_keyboard_mode(KeyboardMode::Exclusive);
 
-    // ── pasek tytułu ──
     let title = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     title.add_css_class("titlebar");
     let ticon = gtk::Image::from_icon_name("system-run");
@@ -139,7 +136,6 @@ fn build_ui(app: &gtk::Application) {
     title.append(&tlabel);
     title.append(&close);
 
-    // ── opis ──
     let top = gtk::Box::new(gtk::Orientation::Horizontal, 12);
     let big = gtk::Image::from_icon_name("system-run");
     big.set_pixel_size(32);
@@ -154,7 +150,6 @@ fn build_ui(app: &gtk::Application) {
     top.append(&big);
     top.append(&desc);
 
-    // ── Open: [____] ──
     let row = gtk::Box::new(gtk::Orientation::Horizontal, 8);
     row.set_margin_top(14);
     let open = gtk::Label::new(None);
@@ -164,7 +159,6 @@ fn build_ui(app: &gtk::Application) {
     row.append(&open);
     row.append(&entry);
 
-    // ── przyciski ──
     let btns = gtk::Box::new(gtk::Orientation::Horizontal, 8);
     btns.set_halign(gtk::Align::End);
     btns.set_margin_top(18);
@@ -188,7 +182,6 @@ fn build_ui(app: &gtk::Application) {
     root.append(&body);
     win.set_child(Some(&root));
 
-    // ── logika ──
     let go: Rc<dyn Fn()> = {
         let e = entry.clone();
         let app = app.clone();
@@ -231,7 +224,6 @@ fn build_ui(app: &gtk::Application) {
         });
     }
 
-    // Esc zamyka
     {
         let app = app.clone();
         let kc = gtk::EventControllerKey::new();
@@ -246,7 +238,6 @@ fn build_ui(app: &gtk::Application) {
         win.add_controller(kc);
     }
 
-    // ↑/↓ = historia
     {
         let hist = Rc::new(load_history());
         let idx = Rc::new(Cell::new(-1i32));
